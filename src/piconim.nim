@@ -44,7 +44,7 @@ file will be located in `csource/build`
 """
 
 type
-  LinkableLib = enum
+  LinkableLib = enum #metti la directori originaria !
     stdio = "pico_stdlib"
     multicore = "pico_multicore"
     gpio = "pico_stdlib"
@@ -60,6 +60,7 @@ type
     flash = "hardware_flash"
     pwm = "hardware_pwm"
     interp = "hardware_interp"
+    rand = "pico_rand"
 
 macro parseLinkableLib(s: string): untyped =
   ## Parses enum using the field name and field str
