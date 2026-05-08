@@ -27,7 +27,7 @@ task futharkgen, "Generate futhark cache":
 
 before install:
   exec "nimble build piconim"
-  futharkgenTask()
+  # futharkgenTask()
 
 task test, "Runs the test suite":
   selfExec "c -d:release -d:mock tests/test_mock"
