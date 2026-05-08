@@ -47,7 +47,7 @@ endif ()
 
 if (PICO_SDK_FETCH_FROM_GIT AND NOT PICO_SDK_FETCH_FROM_GIT_TAG)
   # set(PICO_SDK_FETCH_FROM_GIT_TAG "master")
-  set(PICO_SDK_FETCH_FROM_GIT_TAG "1.5.1")
+  set(PICO_SDK_FETCH_FROM_GIT_TAG "2.1.0")
   message("Using master as default value for PICO_SDK_FETCH_FROM_GIT_TAG")
 endif()
 
