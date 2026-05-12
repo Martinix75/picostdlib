@@ -1,4 +1,5 @@
 import std/os, std/strutils, std/macros, std/compilesettings
+import futhark
 
 macro staticInclude(path: static[string]): untyped =
   newTree(nnkIncludeStmt, newLit(path))
@@ -76,20 +77,10 @@ const armInstallInclude* = static:
     if result.len > 0:
       result[0] = result[0].toUpperAscii()]#
 
-#[func futharkRenameCallback*(name: string; kind: SymbolKind; partof: string; overloading: var bool): string =
+func futharkRenameCallback*(name: string; kind: SymbolKind; partof: string; overloading: var bool): string =
   result = name
   if kind in ["struct", "anon", "typedef", "enum"] and result.len > 0:
     removePrefix(result, "struct_")
     removePrefix(result, "enum_")
     if result.len > 0:
-      result[0] = result[0].toUpperAscii()]#
-
-when defined(futharkgen) or defined(nimcheck):
-  import futhark
-  func futharkRenameCallback*(name: string; kind: SymbolKind; partof: string; overloading: var bool): string =
-    result = name
-    if kind in [Struct, Anon, Typedef, Enum] and result.len > 0:
-      removePrefix(result, "struct_")
-      removePrefix(result, "enum_")
-      if result.len > 0:
-        result[0] = result[0].toUpperAscii()
+      result[0] = result[0].toUpperAscii()
