@@ -68,13 +68,13 @@ const armInstallInclude* = static:
     else: ""
   else: ""
 
-func futharkRenameCallback*(name: string; kind: SymbolKind; partof: string; overloading: var bool): string =
+#[func futharkRenameCallback*(name: string; kind: SymbolKind; partof: string; overloading: var bool): string =
   result = name
   if kind in [Struct, Anon, Typedef, Enum] and result.len > 0:
     removePrefix(result, "struct_")
     removePrefix(result, "enum_")
     if result.len > 0:
-      result[0] = result[0].toUpperAscii()
+      result[0] = result[0].toUpperAscii()]#
 
 #[func futharkRenameCallback*(name: string; kind: SymbolKind; partof: string; overloading: var bool): string =
   result = name
@@ -83,3 +83,13 @@ func futharkRenameCallback*(name: string; kind: SymbolKind; partof: string; over
     removePrefix(result, "enum_")
     if result.len > 0:
       result[0] = result[0].toUpperAscii()]#
+
+when defined(futharkgen) or defined(nimcheck):
+  import futhark
+  func futharkRenameCallback*(name: string; kind: SymbolKind; partof: string; overloading: var bool): string =
+    result = name
+    if kind in [Struct, Anon, Typedef, Enum] and result.len > 0:
+      removePrefix(result, "struct_")
+      removePrefix(result, "enum_")
+      if result.len > 0:
+        result[0] = result[0].toUpperAscii()
