@@ -1,6 +1,6 @@
 # Package
 
-version       = "0.4.1"  # Don't forget to update version in piconim.nim (if needed)
+version       = "0.4.2"  # Don't forget to update version in piconim.nim (if needed)
 author        = "The piconim contributors"
 description   = "Nim bindings for the Raspberry Pi Pico SDK"
 license       = "BSD-3-Clause"
