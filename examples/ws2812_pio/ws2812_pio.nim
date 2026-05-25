@@ -1,4 +1,8 @@
-import picostdlib/[pio, gpio, clock, time]
+import picostdlib
+import picostdlib/hardware/pio
+import picostdlib/hardware/clocks
+import picostdlib/hardware/gpio
+import picostdlib/pico/time
 
 import std/math # Compile-time only
 
@@ -33,15 +37,13 @@ let
   ws2812_program* {.importc.}: PioProgram
 {.pop.}
 
-proc initWs2812*(
-    pioIns: PioInstance, sm: PioStateMachine, offset: uint, pin: Gpio
-    ) =
+proc initWs2812*(pioIns: PioInstance, sm: PioStateMachine, offset: uint, pin: Gpio) =
   pioIns.gpioInit pin
-  pioIns.setPindirs(sm, Out, {ws2812DataPin})
+  pioIns.setPindirs(sm, {ws2812DataPin}, Out)
 
   var cfg = ws2812_program_get_default_config offset
   cfg.setSidesetPins pin
-  cfg.setFifoJoin PioFifoJoin.tx
+  cfg.setFifoJoin PioFifoJoin.JoinTx
 
   when isRgbw:
     cfg.setOutShift(shiftRight = false, autopull = true, pullThreshold = 32)
@@ -51,7 +53,7 @@ proc initWs2812*(
   const ws2812Freq = 800_000 # ws2812 data bitrate in bits/s
   let
     cyclesPerBit = ws2812_T1 + ws2812_T2 + ws2812_T3
-    clockdiv = getHz(ClockIndex.sys).float / (ws2812Freq * cyclesPerBit.float)
+    clockdiv = getHz(ClockIndex.ClockSys).float / (ws2812Freq * cyclesPerBit.float)
   cfg.setClkdiv clockdiv
 
   pioIns.init(sm, offset, cfg)
@@ -120,7 +122,7 @@ proc nextColor(sm: PioStateMachine) =
 proc main() =
   # Init PIO program
   let
-    ws2812Offset = ws2812Pio.addProgram(ws2812_program)
+    ws2812Offset = ws2812Pio.addProgram(ws2812_program.addr)
     ws2812SmResult = ws2812Pio.claimUnusedSm(false)
 
   # Check that we succeeded in claiming a state machine
@@ -132,6 +134,11 @@ proc main() =
   while true:
     if ws2812SmResult >= 0:
       nextColor(ws2812Sm)
-    sleep 40
+    sleepMs(40)
+      #[ Enable this part of the code, to set the color of the LEDs by hand (in this case 3)
+      ws2812Pio.ws2812Put(ws2812Sm, 200,0,00, 0)
+      ws2812Pio.ws2812Put(ws2812Sm, 00,200,00, 0)
+      ws2812Pio.ws2812Put(ws2812Sm, 00,0,200, 0)
+      sleepMs(1000)]#
 
-main()
+main() 
