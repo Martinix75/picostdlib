@@ -513,11 +513,13 @@ proc clock_gettime(clock_id: ClockId; tp: ptr Timespec): cint {.exportc: "clock_
   tp.tv_sec = posix.Time(0)
   var tk: uint64
   var tv: Timeval
-  if clock_id == CLOCK_REALTIME or clock_id == CLOCK_MONOTONIC:
+  #if clock_id == CLOCK_REALTIME or clock_id == CLOCK_MONOTONIC:
+  if clock_id == ClockId(0) or clock_id == ClockId(1): #patch for sdk 2.2.0
     gettimeofday(tv, nil)
     tp.tv_sec = tv.tv_sec
     tp.tv_nsec = tv.tv_usec * 1000
-  elif clock_id == CLOCK_PROCESS_CPUTIME_ID or clock_id == CLOCK_THREAD_CPUTIME_ID:
+  #elif clock_id == CLOCK_PROCESS_CPUTIME_ID or clock_id == CLOCK_THREAD_CPUTIME_ID:
+  elif clock_id == ClockId(2) or clock_id == ClockId(3): #patch for sdk 2.2.0
     tk = timeUs64()
     tp.tv_sec = posix.Time tk div 1000;
     tp.tv_nsec = int (tk mod 1000) * 1_000_000
