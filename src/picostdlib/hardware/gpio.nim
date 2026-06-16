@@ -631,6 +631,11 @@ template setupGpio*(name: untyped; pin: static[range[0 .. 47]]; dir: Direction) 
   init(name)
   setDir(name, dir)
 
+template setupGpio*(name: untyped; pin: Gpio; dir: Direction) =
+  const name = pin
+  init(name)
+  setDir(name, dir)
+
 proc init*(_: typedesc[Gpio]; pin: static[range[0 .. 47]]; dir: Direction = Out): Gpio =
   ## perform the typical assignment, init(), and setDir() steps all in one proc.
   ## usage: let myPin = Gpio.init(5, In)
