@@ -41,15 +41,21 @@ before install:
 import std/strutils
 
 proc getNimbleVersion(): tuple[major, minor, patch: int] =
-  let s = gorge("nimble --version").strip()
-  let v = s.splitWhitespace()[^1]
+  let s = gorge("nimble --version")
+  let fields = s.splitWhitespace()
+
+  # fields[1] = "v0.24.1"
+  let v = fields[1].strip(chars = {'v'})
   let p = v.split(".")
+
   result.major = parseInt(p[0])
   result.minor = parseInt(p[1])
-  result.patch = if p.len > 2: parseInt(p[2]) else: 0
+  result.patch = parseInt(p[2])
 
 before install:
   let v = getNimbleVersion()
+
+  echo "Nimble version: ", v.major, ".", v.minor, ".", v.patch
 
   if v.major == 0 and v.minor < 24:
     exec "nimble build piconim"
