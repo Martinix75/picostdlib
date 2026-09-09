@@ -26,7 +26,7 @@ task futharkgen, "Generate futhark cache":
   rmDir "build/futharkgen"
 
 before install:
-  selfExec "nimble build piconim"
+  exec "nimble build piconim"
   # futharkgenTask()
 
 task test, "Runs the test suite":
