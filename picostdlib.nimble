@@ -36,7 +36,8 @@ before install:
   exec "nimble build piconim"]#
 
 before install:
-  exec "nimble build piconim picostdlib.nimble"
+  withDir getPkgDir():
+    exec "nimble build piconim"
 
 task test, "Runs the test suite":
   selfExec "c -d:release -d:mock tests/test_mock"
