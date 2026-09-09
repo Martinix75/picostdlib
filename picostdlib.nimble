@@ -25,9 +25,12 @@ task futharkgen, "Generate futhark cache":
   exec "./piconim build --project futharkgen src/picostdlib/build_utils/futharkgen/futharkgen --compileOnly"
   rmDir "build/futharkgen"
 
-before install:
+#[before install:
   exec "nimble build piconim"
-  # futharkgenTask()
+  # futharkgenTask()]#
+before install:
+  echo "CURRENT DIR = ", getCurrentDir()
+  exec "nimble build piconim"
 
 task test, "Runs the test suite":
   selfExec "c -d:release -d:mock tests/test_mock"
