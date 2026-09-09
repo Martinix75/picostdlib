@@ -30,8 +30,8 @@ task futharkgen, "Generate futhark cache":
   # futharkgenTask()]#
 before install:
   echo "CURRENT DIR = ", getCurrentDir()
-  echo "NIMBLE FILE = ", getCurrentDir() / "picostdlib.nimble"
-  echo "EXISTS = ", fileExists(getCurrentDir() / "picostdlib.nimble")
+  echo "NIMBLE FILE = ", getCurrentDir() & "/picostdlib.nimble"
+  echo "EXISTS = ", fileExists(getCurrentDir() & "/picostdlib.nimble")
   exec "ls -la"
   exec "nimble build piconim"
 
