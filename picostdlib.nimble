@@ -27,13 +27,16 @@ task futharkgen, "Generate futhark cache":
 
 #[before install:
   exec "nimble build piconim"
-  # futharkgenTask()]#
+  # futharkgenTask()
 before install:
   echo "CURRENT DIR = ", getCurrentDir()
   echo "NIMBLE FILE = ", getCurrentDir() & "/picostdlib.nimble"
   echo "EXISTS = ", fileExists(getCurrentDir() & "/picostdlib.nimble")
   exec "ls -la"
-  exec "nimble build piconim"
+  exec "nimble build piconim"]#
+
+before install:
+  exec "nimble build piconim picostdlib.nimble"
 
 task test, "Runs the test suite":
   selfExec "c -d:release -d:mock tests/test_mock"
