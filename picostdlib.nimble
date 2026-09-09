@@ -36,7 +36,7 @@ before install:
   exec "nimble build piconim"
 
 before install:
-  exec "nim c -d:release src/picostdlib/build_utils/piconim.nim" #questo funge x nimble >0.24
+  exec "nim c -d:release src/picostdlib/build_utils/piconim.nim" #questo funge x nimble >0.24]#
 
 import std/strutils
 
@@ -60,9 +60,7 @@ before install:
   if v.major == 0 and v.minor < 24:
     exec "nimble build piconim"
   else:
-    exec "nim c -d:release src/picostdlib/build_utils/piconim.nim"]#
-before install:
-  exec "nim c -d:release src/picostdlib/build_utils/piconim.nim"
+    exec "nim c -d:release src/picostdlib/build_utils/piconim.nim"
 
 task test, "Runs the test suite":
   selfExec "c -d:release -d:mock tests/test_mock"
