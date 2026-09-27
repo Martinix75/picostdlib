@@ -262,6 +262,33 @@ template i2cSetupNim*(blokk: ptr I2cInst, pSda, pScl: Gpio, freq: uint, pull = t
     pSda.pullDown()
     pScl.pullDown()
 
+#[queta da valuatre ma è la candidata nuova funzioa i2c per i pullup...
+type
+  Pull* = enum
+    Up, Disable
+
+proc i2cSetupNim*(port: ptr I2cInst;
+                 pSda, pScl: uint8;
+                 freq: uint;
+                 pull = Pull.Up): ptr I2cInst =
+  #sugar setup for i2c:
+  #port = block i2c0 / i2c1 (see pinout)
+  #pSda/pScl = the pins you want use (ex: 2.Gpio, 3.Gpio) I do not recommend the use of 0.Gpio, 1.Gpio.
+  #freq = is the working frequency of the i2c device (see device manual; ex: 100000).
+  #pull = Disable: disable pullup, UP: active pullUp (default Up).
+  let sda: Gpio = pSda.Gpio
+  let scl: Gpio = pScl.Gpio
+  discard port.init(freq)
+  sda.setFunction(I2c)
+  scl.setFunction(I2c)
+  if pull == Pull.Disable:
+    sda.disablePulls()
+    scl.disablePulls()
+  elif pull == Pull.Up:
+    sda.pullUp()
+    scl.pullUp() ]#
+
+
 proc i2cWriteBlockingNim*(
     i2c: ptr I2cInst,
     address: I2cAddress,
