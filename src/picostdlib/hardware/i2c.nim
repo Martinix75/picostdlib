@@ -286,7 +286,17 @@ proc i2cSetupNim*(port: ptr I2cInst;
     scl.disablePulls()
   elif pull == Pull.Up:
     sda.pullUp()
-    scl.pullUp() ]#
+    scl.pullUp()
+
+    variante..
+    case Pull
+    of Up:
+      sda.pullUp()
+      scl.pullUp()
+    of Disable:
+      sda.disablePulls()
+      scl.disablePulls()
+    ]#
 
 
 proc i2cWriteBlockingNim*(
