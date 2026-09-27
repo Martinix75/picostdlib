@@ -245,7 +245,7 @@ proc getDreq*(i2c: ptr I2cInst; isTx: bool): cuint {.importc: "i2c_get_dreq".}
 
 ## Nim helpers
 
-template i2cSetupNim*(blokk: ptr I2cInst, pSda, pScl: Gpio, freq: uint, pull = true) =
+#[template i2cSetupNim*(blokk: ptr I2cInst, pSda, pScl: Gpio, freq: uint, pull = true) =
   #sugar setup for i2c:
   #blokk= block i2c0 / i2c1 (see pinout)
   #pSda/pScl = the pins you want use (ex: 2.Gpio, 3.Gpio) I do not recommend the use of 0.Gpio, 1.Gpio
@@ -260,9 +260,9 @@ template i2cSetupNim*(blokk: ptr I2cInst, pSda, pScl: Gpio, freq: uint, pull = t
     pScl.pullUp()
   else:
     pSda.pullDown()
-    pScl.pullDown()
+    pScl.pullDown()]#
 
-#[queta da valuatre ma è la candidata nuova funzioa i2c per i pullup...
+#queta da valuatre ma è la candidata nuova funzioa i2c per i pullup...
 type
   Pull* = enum
     Up, Disable
@@ -281,22 +281,21 @@ proc i2cSetupNim*(port: ptr I2cInst;
   discard port.init(freq)
   sda.setFunction(I2c)
   scl.setFunction(I2c)
-  if pull == Pull.Disable:
+  #[if pull == Pull.Disable:
     sda.disablePulls()
     scl.disablePulls()
   elif pull == Pull.Up:
     sda.pullUp()
     scl.pullUp()
 
-    variante..
-    case Pull
-    of Up:
-      sda.pullUp()
-      scl.pullUp()
-    of Disable:
-      sda.disablePulls()
-      scl.disablePulls()
-    ]#
+    variante..]#
+  case Pull
+  of Up:
+    sda.pullUp()
+    scl.pullUp()
+  of Disable:
+    sda.disablePulls()
+    scl.disablePulls()
 
 
 proc i2cWriteBlockingNim*(
