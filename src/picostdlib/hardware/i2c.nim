@@ -281,14 +281,6 @@ proc i2cSetupNim*(port: ptr I2cInst;
   discard port.init(freq)
   sda.setFunction(I2c)
   scl.setFunction(I2c)
-  #[if pull == Pull.Disable:
-    sda.disablePulls()
-    scl.disablePulls()
-  elif pull == Pull.Up:
-    sda.pullUp()
-    scl.pullUp()
-
-    variante..]#
   case Pull
   of Up:
     sda.pullUp()
