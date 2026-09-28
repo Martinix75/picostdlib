@@ -624,7 +624,7 @@ proc getDir*(gpio: Gpio): Direction {.importc: "gpio_get_dir".}
 
 # Nim helpers
 
-template setupGpio*(name: untyped; pin: static[range[0 .. 47]]; dir: Direction) =
+#[template setupGpio*(name: untyped; pin: static[range[0 .. 47]]; dir: Direction) =
   # Makes a `const 'name' = pin; init(name); name.setDir(dir)
   # usage: setupGpio(myPinName, 5, Out)
   const name = Gpio(pin)
@@ -645,7 +645,40 @@ proc init*(_: typedesc[Gpio]; pin: static[range[0 .. 47]]; dir: Direction = Out)
   ## **dir** : *bool* [optional, defaults to Out] - *Out* or *In*
   result = static(Gpio(pin))
   result.init()
+  result.setDir(dir)]#
+type
+  Pull* {.pure.} = enum
+    Up, Down, Disable
+
+template gpioSetupNim*(name: untyped; pin: Gpio; dir: Direction;
+                       pull = Pull.Disable) =
+  #sugar setup for gpio: creates a const 'name', then init + setDir (+ pull if In)
+  #usage: gpioSetupNim(pulsante, 7.Gpio, In, Pull.Up)
+  const name = pin
+  init(name)
+  setDir(name, dir)
+  if dir == Direction.In:
+    setPull(name, pull)
+
+template gpioSetupNim*(name: untyped; pin: static[range[0 .. 47]];
+                       dir: Direction; pull = Pull.Disable) =
+  gpioSetupNim(name, Gpio(pin), dir, pull)
+
+template setupGpio*(name: untyped; pin: Gpio; dir: Direction;
+                    pull = Pull.Disable) {.deprecated: "use gpioSetupNim".} =
+  gpioSetupNim(name, pin, dir, pull)
+
+template setupGpio*(name: untyped; pin: static[range[0 .. 47]];
+                    dir: Direction; pull = Pull.Disable) {.deprecated: "use gpioSetupNim".} =
+  gpioSetupNim(name, pin, dir, pull)
+
+proc init*(_: typedesc[Gpio]; pin: static[range[0 .. 47]];
+           dir: Direction = Out; pull = Pull.Disable): Gpio =
+  result = static(Gpio(pin))
+  result.init()
   result.setDir(dir)
+  if dir == Direction.In:
+    result.setPull(pull)
 
 when defined(runtests):
   setupGpio(myPinName, 5, Out)
