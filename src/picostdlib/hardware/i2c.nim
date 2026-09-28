@@ -264,7 +264,7 @@ proc getDreq*(i2c: ptr I2cInst; isTx: bool): cuint {.importc: "i2c_get_dreq".}
 
 #queta da valuatre ma è la candidata nuova funzioa i2c per i pullup...
 type
-  Pull* = enum
+  Pull* {.pure.} = enum
     Up, Disable
 
 proc i2cSetupNim*(port: ptr I2cInst;
