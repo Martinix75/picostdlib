@@ -268,26 +268,25 @@ type
     Up, Disable
 
 proc i2cSetupNim*(port: ptr I2cInst;
-                 pSda, pScl: uint8;
+                 sda, scl: Gpio;
                  freq: uint;
-                 pull = Pull.Up): ptr I2cInst =
+                 pull = Pull.Up): ptr I2cInst {.discardable.} =
   #sugar setup for i2c:
   #port = block i2c0 / i2c1 (see pinout)
-  #pSda/pScl = the pins you want use (ex: 2.Gpio, 3.Gpio) I do not recommend the use of 0.Gpio, 1.Gpio.
+  #sda/scl = the pins you want use (ex: 2.Gpio, 3.Gpio) I do not recommend the use of 0.Gpio, 1.Gpio.
   #freq = is the working frequency of the i2c device (see device manual; ex: 100000).
-  #pull = Disable: disable pullup, UP: active pullUp (default Up).
-  let sda: Gpio = pSda.Gpio
-  let scl: Gpio = pScl.Gpio
+  #pull = to activate the internal pull-up: Pull.Up (default value); to deactivate the internal pull-up: Pull:Disable.
   discard port.init(freq)
-  sda.setFunction(I2c)
-  scl.setFunction(I2c)
-  case Pull
-  of Up:
+  sda.setFunction(GpioFunction.I2c)
+  scl.setFunction(GpioFunction.I2c)
+  case pull
+  of Pull.Up:
     sda.pullUp()
     scl.pullUp()
-  of Disable:
+  of Pull.Disable:
     sda.disablePulls()
     scl.disablePulls()
+  result = port
 
 
 proc i2cWriteBlockingNim*(
